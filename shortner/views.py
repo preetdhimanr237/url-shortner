@@ -2,14 +2,19 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import ShortURLSerializer
+from .models import ShortURL
 import uuid
 
 # Create your views here.
 class ShortURLView(APIView):
 
-    def get(self,request):
-        return Response({"message":"Welcome to URL Shortner!"})
-
+    # def get(self,request):
+    #     urls = ShortURL.objects.all()
+    #     serializer = ShortURLSerializer(urls, many = True)
+    #     return Response(serializer.data)
+    def get(self, request):
+        urls = ShortURL.objects.all().values()
+        return Response(list(urls))
     def post(self, request):
         data = request.data.copy()
         data["short_code"] = uuid.uuid4().hex[:6]
