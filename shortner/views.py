@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404,redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import ShortURLSerializer
@@ -32,3 +32,9 @@ class ShortURLView(APIView):
         return Response(serializer.errors, status=400)
 
 
+def redirect_url(request,code):
+    url = get_object_or_404(ShortURL,short_code=code)
+    url.clicks+=1
+    url.save(update_fields=["clicks"])
+    return redirect(url.original_url)
+    
